@@ -15,7 +15,8 @@ export default function DashboardPage() {
   const { expenses } = state
 
   // Dashboard KPIs are derived from canonical values stored in cents.
-  const currentYearMonth = new Date().toISOString().slice(0, 7)
+  const now = new Date()
+  const currentYearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
   const totalAllTime = expenses.reduce((sum, e) => sum + e.amount, 0)
   const thisMonth = getThisMonthTotal(expenses, currentYearMonth)
   const topCategory = getTopCategory(expenses)

@@ -26,7 +26,6 @@ export default function Toast({ message, type = 'success', onClose }: Props) {
   return (
     <div
       role="alert"
-      aria-live="assertive"
       className={`fixed bottom-24 md:bottom-6 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-sm font-medium animate-slide-up ${colors}`}
     >
       <span aria-hidden="true">{type === 'success' ? '✓' : '✕'}</span>

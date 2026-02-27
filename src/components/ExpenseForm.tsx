@@ -13,9 +13,10 @@ interface Props {
   initialExpense?: Expense
 }
 
-// Returns today's date in YYYY-MM-DD for `<input type="date">`.
+// Returns today's date in YYYY-MM-DD for `<input type="date">` using local time.
 function today(): string {
-  return new Date().toISOString().split('T')[0]
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 export default function ExpenseForm({ initialExpense }: Props) {
@@ -74,6 +75,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
 
     // Toast first, then route transition for clear user feedback.
     setToast(isEdit ? 'Expense updated!' : 'Expense added!')
+    setSaving(false)
     setTimeout(() => router.push('/expenses'), 1200)
   }
 
