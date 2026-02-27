@@ -9,7 +9,7 @@ interface Props {
 export default function SummaryCard({ title, value, subtitle, icon, accent }: Props) {
   return (
     <div className={`bg-white rounded-xl border shadow-sm p-5 flex items-start gap-4 ${accent ? 'border-indigo-200 bg-indigo-50' : 'border-slate-200'}`}>
-      <div className={`text-3xl p-2 rounded-lg ${accent ? 'bg-indigo-100' : 'bg-slate-100'}`}>
+      <div aria-hidden="true" className={`text-3xl p-2 rounded-lg ${accent ? 'bg-indigo-100' : 'bg-slate-100'}`}>
         {icon}
       </div>
       <div className="min-w-0">
