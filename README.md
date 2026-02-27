@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expense Tracker AI
 
-## Getting Started
+Aplicacao web para controle de gastos pessoais, com foco em simplicidade de uso e codigo facil de manter.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js 14 (App Router)
+- React 18 + TypeScript
+- Tailwind CSS
+- Recharts
+- Jest + Testing Library
+- Persistencia local via `localStorage`
+
+## Funcionalidades
+
+- Cadastro, edicao e exclusao de despesas
+- Filtros por categoria, periodo e texto
+- Dashboard com indicadores e graficos
+- Exportacao CSV do resultado filtrado
+- Layout responsivo (desktop + mobile)
+
+## Regras de dominio
+
+- `amount` e sempre armazenado em **centavos** (`number` inteiro)
+- `date` usa formato `YYYY-MM-DD`
+- Categorias sao controladas por union type (`Category`)
+- Filtros pertencem ao estado global, mas apenas despesas sao persistidas
+
+## Fluxo de dados
+
+1. `ExpenseProvider` inicializa estado com `useReducer`
+2. Na montagem, o provider hidrata despesas do `localStorage`
+3. Componentes disparam acoes (`ADD_EXPENSE`, `UPDATE_EXPENSE`, etc.)
+4. Reducer produz novo estado imutavel
+5. Alteracoes em `expenses` sao persistidas novamente no `localStorage`
+6. Paginas/graficos recalculam visoes derivadas a partir do estado atual
+
+## Estrutura principal
+
+```text
+src/
+  app/
+    page.tsx                    # Dashboard
+    expenses/page.tsx           # Lista + filtros + exportacao
+    expenses/new/page.tsx       # Cadastro
+    expenses/[id]/edit/page.tsx # Edicao
+    layout.tsx                  # Shell global + provider
+  components/
+    ExpenseForm.tsx             # Formulario create/edit
+    ExpenseRow.tsx              # Linha/cartao da listagem
+    charts/                     # Recharts (pizza + barras)
+    ui/                         # Componentes visuais reutilizaveis
+  context/
+    ExpenseContext.tsx          # Estado global + reducer + persistencia
+  lib/
+    analytics.ts                # Agregacoes para dashboard/graficos
+    format.ts                   # Conversoes moeda/data
+    csv.ts                      # Geracao/download CSV
+  types/
+    expense.ts                  # Contratos de dominio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `npm run dev`: servidor de desenvolvimento
+- `npm run build`: build de producao
+- `npm run start`: executa build em modo server
+- `npm run lint`: lint (Next + ESLint)
+- `npm run test`: executa testes
+- `npm run test:watch`: testes em watch mode
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Como rodar localmente
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Aplicacao disponivel em `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run test
+```
 
-## Deploy on Vercel
+Cobertura atual foca utilitarios e reducer (regras de negocio centrais).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Documentacao adicional
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Design original](/docs/plans/2026-02-27-expense-tracker-design.md)
+- [Plano de implementacao](/docs/plans/2026-02-27-expense-tracker-implementation.md)
+- [Guia tecnico do codigo](/docs/codebase-guide.md)
+
+## Convencoes de manutencao
+
+- Evite logica de negocio em componentes quando puder mover para `src/lib`
+- Mantenha operacoes monetarias em centavos ate a camada de exibicao
+- Sempre passe por `dispatch` para mutacoes de estado
+- Ao adicionar categoria nova, atualize:
+  - `CATEGORIES`
+  - `CATEGORY_COLORS`
+  - `CATEGORY_BG`
+  - testes e filtros relacionados
