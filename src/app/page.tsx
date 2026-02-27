@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useExpenses } from '@/context/ExpenseContext'
 import { formatCurrency, formatDate } from '@/lib/format'
+import { downloadCSV } from '@/lib/csv'
 import { getThisMonthTotal, getTopCategory } from '@/lib/analytics'
 import SummaryCard from '@/components/ui/SummaryCard'
 import CategoryBadge from '@/components/ui/CategoryBadge'
@@ -39,9 +40,22 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-sm text-slate-500 mt-1">Your spending overview</p>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1">Your spending overview</p>
+        </div>
+        {expenses.length > 0 && (
+          <button
+            onClick={() => downloadCSV(expenses)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+            </svg>
+            Export CSV
+          </button>
+        )}
       </div>
 
       {/* Summary cards */}
