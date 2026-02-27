@@ -2,6 +2,7 @@ import ExpenseForm from '@/components/ExpenseForm'
 
 export default function NewExpensePage() {
   return (
+    // Thin route wrapper keeps creation UX consistent with edit page shell.
     <div className="max-w-lg mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900">Add Expense</h1>

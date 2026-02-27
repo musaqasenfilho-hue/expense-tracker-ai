@@ -3,6 +3,7 @@ import Link from 'next/link'
 interface Props {
   title: string
   message: string
+  // Optional CTA to guide first-time users toward the next useful action.
   actionLabel?: string
   actionHref?: string
 }

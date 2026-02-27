@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 interface Props {
   title: string
   message: string
+  // Label override allows reuse for non-delete confirmations.
   confirmLabel?: string
   onConfirm: () => void
   onCancel: () => void
@@ -28,6 +29,7 @@ export default function ConfirmDialog({ title, message, confirmLabel = 'Delete',
   }, [onCancel])
 
   return (
+    // Backdrop + centered dialog keeps destructive actions explicit.
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
         aria-hidden="true"

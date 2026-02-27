@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 
+// Shared nav model rendered in desktop top bar and mobile tab bar.
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: '◎' },
   { href: '/expenses', label: 'Expenses', icon: '≡' },
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
 ]
 
 export default function Navbar() {
+  // Used to style current route and set `aria-current`.
   const pathname = usePathname()
 
   return (

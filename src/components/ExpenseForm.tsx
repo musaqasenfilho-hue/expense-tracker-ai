@@ -9,9 +9,11 @@ import { useExpenses } from '@/context/ExpenseContext'
 import Toast from '@/components/ui/Toast'
 
 interface Props {
+  // When present, the form runs in edit mode and pre-fills fields.
   initialExpense?: Expense
 }
 
+// Returns today's date in YYYY-MM-DD for `<input type="date">`.
 function today(): string {
   return new Date().toISOString().split('T')[0]
 }
@@ -32,6 +34,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
   const [saving, setSaving] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
 
+  // Client-side validation keeps UX responsive before reducer updates.
   function validate(): boolean {
     const errs: Record<string, string> = {}
     if (!date) errs.date = 'Date is required'
@@ -44,13 +47,16 @@ export default function ExpenseForm({ initialExpense }: Props) {
     return Object.keys(errs).length === 0
   }
 
+  // Normalizes form values, dispatches reducer action, then navigates back to list view.
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!validate()) return
 
+    // Small artificial delay to make submit feedback visible.
     setSaving(true)
     await new Promise(r => setTimeout(r, 300))
 
+    // Keep amount in cents and trim description before persisting.
     const expense: Expense = {
       id: initialExpense?.id ?? crypto.randomUUID(),
       date,
@@ -66,6 +72,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
       dispatch({ type: 'ADD_EXPENSE', payload: expense })
     }
 
+    // Toast first, then route transition for clear user feedback.
     setToast(isEdit ? 'Expense updated!' : 'Expense added!')
     setTimeout(() => router.push('/expenses'), 1200)
   }
@@ -102,6 +109,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
               value={amountDisplay}
               onChange={e => { setAmountDisplay(e.target.value); setErrors(p => ({ ...p, amount: '' })) }}
               onBlur={() => {
+                // Reformat to fixed two decimals after user leaves field.
                 const cents = displayToCents(amountDisplay)
                 if (!isNaN(cents) && cents > 0) setAmountDisplay(centsToDisplay(cents))
               }}

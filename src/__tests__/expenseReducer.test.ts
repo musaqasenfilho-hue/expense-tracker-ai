@@ -2,6 +2,7 @@ import { expenseReducer } from '@/context/ExpenseContext'
 import type { AppState } from '@/types/expense'
 import { DEFAULT_FILTERS } from '@/types/expense'
 
+// Mirrors provider defaults so reducer tests stay aligned with runtime behavior.
 const initialState: AppState = { expenses: [], filters: DEFAULT_FILTERS }
 
 const sampleExpense = {

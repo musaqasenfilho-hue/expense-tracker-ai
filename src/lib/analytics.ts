@@ -1,6 +1,7 @@
 import type { Expense, Category } from '@/types/expense'
 import { CATEGORIES } from '@/types/expense'
 
+// Aggregates total spend (in cents) per category for charts and KPIs.
 export function getCategoryTotals(expenses: Expense[]): Record<Category, number> {
   const totals = Object.fromEntries(CATEGORIES.map(c => [c, 0])) as Record<Category, number>
   for (const e of expenses) {
@@ -9,18 +10,21 @@ export function getCategoryTotals(expenses: Expense[]): Record<Category, number>
   return totals
 }
 
+// Returns total spend for a specific year-month key (YYYY-MM).
 export function getThisMonthTotal(expenses: Expense[], yearMonth: string): number {
   return expenses
     .filter(e => e.date.startsWith(yearMonth))
     .reduce((sum, e) => sum + e.amount, 0)
 }
 
+// Picks the category with the highest aggregate spend.
 export function getTopCategory(expenses: Expense[]): Category | null {
   if (expenses.length === 0) return null
   const totals = getCategoryTotals(expenses)
   return (Object.entries(totals).sort(([, a], [, b]) => b - a)[0][0]) as Category
 }
 
+// Builds a rolling 6-month window ending at `currentYearMonth` for bar chart usage.
 export function getMonthlyTotals(
   expenses: Expense[],
   currentYearMonth: string

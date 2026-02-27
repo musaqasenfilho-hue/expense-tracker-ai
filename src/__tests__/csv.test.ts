@@ -1,6 +1,7 @@
 import { generateCSV } from '@/lib/csv'
 import type { Expense } from '@/types/expense'
 
+// Minimal fixture to assert CSV shape and escaping behavior.
 const expenses: Expense[] = [
   { id: '1', date: '2026-02-01', amount: 1250, category: 'Food', description: 'Lunch at cafe', createdAt: '' },
 ]

@@ -14,9 +14,11 @@ export default function ExpensesPage() {
   const { state, dispatch } = useExpenses()
   const { expenses, filters } = state
 
+  // Filtering and sorting are memoized to avoid recomputation on unrelated rerenders.
   const filtered = useMemo(() => {
     return expenses
       .filter(e => {
+        // Category/date/search predicates are intentionally applied in a single pass.
         if (filters.category !== 'All' && e.category !== filters.category) return false
         if (filters.dateFrom && e.date < filters.dateFrom) return false
         if (filters.dateTo && e.date > filters.dateTo) return false
@@ -28,10 +30,12 @@ export default function ExpensesPage() {
 
   const totalFiltered = filtered.reduce((sum, e) => sum + e.amount, 0)
 
+  // Reset helper keeps reducer usage consistent with other filter updates.
   function clearFilters() {
     dispatch({ type: 'SET_FILTER', payload: { dateFrom: null, dateTo: null, category: 'All', searchQuery: '' } })
   }
 
+  // Used to toggle "Clear filters" UI and empty-state messaging.
   const hasActiveFilters =
     filters.category !== 'All' || !!filters.dateFrom || !!filters.dateTo || filters.searchQuery !== ''
 
@@ -48,6 +52,7 @@ export default function ExpensesPage() {
         <div className="flex gap-2">
           <button
             type="button"
+            // Export only what the user is currently viewing (filtered subset).
             onClick={() => downloadCSV(filtered)}
             className="px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors flex items-center gap-1.5"
           >

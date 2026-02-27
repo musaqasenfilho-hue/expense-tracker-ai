@@ -4,6 +4,7 @@
 
 @layer base {
   body {
+    /* Neutral app background + antialiasing baseline for all routes. */
     @apply bg-slate-50 text-slate-900 antialiased;
   }
 }

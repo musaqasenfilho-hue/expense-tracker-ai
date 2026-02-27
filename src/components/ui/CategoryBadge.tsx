@@ -1,6 +1,7 @@
 import { CATEGORY_BG } from '@/types/expense'
 import type { Category } from '@/types/expense'
 
+// Small visual affordance to make category scanning faster in lists.
 const CATEGORY_EMOJI: Record<Category, string> = {
   Food: '🍕',
   Transportation: '🚗',
@@ -12,6 +13,7 @@ const CATEGORY_EMOJI: Record<Category, string> = {
 
 interface Props {
   category: Category
+  // `sm` for compact list rows, `md` for standard cards and summaries.
   size?: 'sm' | 'md'
 }
 

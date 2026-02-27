@@ -8,8 +8,10 @@ import Link from 'next/link'
 export default function EditExpensePage() {
   const { id } = useParams<{ id: string }>()
   const { state, hydrated } = useExpenses()
+  // Find the target once from context state; no remote fetch is needed in this app.
   const expense = state.expenses.find(e => e.id === id)
 
+  // Avoid false "not found" while localStorage hydration is still in progress.
   if (!hydrated) {
     return (
       <div className="max-w-lg mx-auto px-4 py-8 flex items-center justify-center">
@@ -21,6 +23,7 @@ export default function EditExpensePage() {
   if (!expense) {
     return (
       <div className="max-w-lg mx-auto px-4 py-8 text-center">
+        {/* Broken/deleted ids are handled gracefully with a clear return path. */}
         <p className="text-slate-500">Expense not found.</p>
         <Link href="/expenses" className="text-indigo-600 text-sm mt-2 inline-block hover:underline">
           ← Back to expenses

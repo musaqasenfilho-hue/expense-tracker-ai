@@ -3,6 +3,7 @@ interface Props {
   value: string
   subtitle?: string
   icon: string
+  // Accent highlights the most important KPI card in a group.
   accent?: boolean
 }
 

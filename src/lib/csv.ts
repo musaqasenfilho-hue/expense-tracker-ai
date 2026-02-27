@@ -1,5 +1,6 @@
 import type { Expense } from '@/types/expense'
 
+// Escapes CSV fields that contain commas, quotes or line breaks.
 function escapeCSV(value: string): string {
   if (value.includes(',') || value.includes('"') || value.includes('\n')) {
     return `"${value.replace(/"/g, '""')}"`
@@ -7,6 +8,7 @@ function escapeCSV(value: string): string {
   return value
 }
 
+// Serializes expenses to CSV text using dollar display values in the Amount column.
 export function generateCSV(expenses: Expense[]): string {
   const header = 'Date,Amount,Category,Description'
   const rows = expenses.map(e =>
@@ -20,6 +22,7 @@ export function generateCSV(expenses: Expense[]): string {
   return [header, ...rows].join('\n')
 }
 
+// Creates a browser download for the generated CSV file.
 export function downloadCSV(expenses: Expense[], filename = 'expenses.csv'): void {
   const csv = generateCSV(expenses)
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })

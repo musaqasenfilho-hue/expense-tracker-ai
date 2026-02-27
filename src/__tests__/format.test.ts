@@ -2,6 +2,7 @@ import { formatCurrency, centsToDisplay, displayToCents, formatDate } from '@/li
 
 describe('formatCurrency', () => {
   it('formats cents as USD currency string', () => {
+    // Regression guard for locale formatting and thousand separators.
     expect(formatCurrency(1250)).toBe('$12.50')
     expect(formatCurrency(100000)).toBe('$1,000.00')
     expect(formatCurrency(0)).toBe('$0.00')

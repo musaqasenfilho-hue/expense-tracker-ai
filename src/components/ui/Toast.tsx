@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function Toast({ message, type = 'success', onClose }: Props) {
+  // Ref keeps latest callback without re-scheduling timer effect.
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose
 
@@ -17,6 +18,7 @@ export default function Toast({ message, type = 'success', onClose }: Props) {
     return () => clearTimeout(timer)
   }, []) // stable: runs once on mount
 
+  // Semantic colors aligned with success/error variants.
   const colors = type === 'success'
     ? 'bg-emerald-600 text-white'
     : 'bg-red-600 text-white'

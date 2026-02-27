@@ -1,6 +1,7 @@
 import { getMonthlyTotals, getCategoryTotals, getThisMonthTotal, getTopCategory } from '@/lib/analytics'
 import type { Expense } from '@/types/expense'
 
+// Fixture intentionally spans multiple categories and months.
 const mockExpenses: Expense[] = [
   { id: '1', date: '2026-02-01', amount: 1000, category: 'Food', description: 'Lunch', createdAt: '' },
   { id: '2', date: '2026-02-15', amount: 2000, category: 'Food', description: 'Dinner', createdAt: '' },
@@ -36,6 +37,7 @@ describe('getTopCategory', () => {
 
 describe('getMonthlyTotals', () => {
   it('returns last 6 months with totals', () => {
+    // Uses a deterministic anchor month so rolling-window behavior stays stable.
     const result = getMonthlyTotals(mockExpenses, '2026-02')
     expect(result).toHaveLength(6)
     const feb = result.find(r => r.yearMonth === '2026-02')

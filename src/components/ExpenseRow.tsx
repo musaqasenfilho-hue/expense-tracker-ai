@@ -15,9 +15,11 @@ interface Props {
 
 export default function ExpenseRow({ expense }: Props) {
   const { dispatch } = useExpenses()
+  // `confirming` controls modal visibility; `toast` controls transient feedback.
   const [confirming, setConfirming] = useState(false)
   const [toast, setToast] = useState(false)
 
+  // Deletes via reducer and closes UI affordances in a predictable order.
   function handleDelete() {
     dispatch({ type: 'DELETE_EXPENSE', payload: expense.id })
     setConfirming(false)
@@ -28,6 +30,7 @@ export default function ExpenseRow({ expense }: Props) {
     <>
       {/* Desktop row */}
       <div className="hidden md:grid grid-cols-[120px_1fr_160px_100px_80px] items-center gap-4 px-4 py-3 border-b border-slate-100 hover:bg-slate-50 transition-colors">
+        {/* Date remains unformatted in data model but displayed in localized text. */}
         <span className="text-sm text-slate-500">{formatDate(expense.date)}</span>
         <span className="text-sm text-slate-900 truncate">{expense.description}</span>
         <CategoryBadge category={expense.category} size="sm" />
@@ -84,6 +87,7 @@ export default function ExpenseRow({ expense }: Props) {
       {confirming && (
         <ConfirmDialog
           title="Delete expense?"
+          // Keep message explicit to reduce accidental destructive actions.
           message={`This will permanently delete "${expense.description}".`}
           confirmLabel="Delete"
           onConfirm={handleDelete}
