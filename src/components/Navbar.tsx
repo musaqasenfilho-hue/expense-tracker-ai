@@ -21,11 +21,12 @@ export default function Navbar() {
           <span className="text-2xl font-bold text-indigo-600">💰</span>
           <span className="text-lg font-semibold text-slate-900">ExpenseTracker</span>
         </div>
-        <nav className="flex items-center gap-1">
+        <nav aria-label="Main navigation" className="flex items-center gap-1">
           {NAV_ITEMS.map(item => (
             <Link
               key={item.href}
               href={item.href}
+              aria-current={pathname === item.href ? 'page' : undefined}
               className={twMerge(
                 'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
                 pathname === item.href
@@ -40,11 +41,12 @@ export default function Navbar() {
       </header>
 
       {/* Mobile bottom tab bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex">
+      <nav aria-label="Main navigation" className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex">
         {NAV_ITEMS.map(item => (
           <Link
             key={item.href}
             href={item.href}
+            aria-current={pathname === item.href ? 'page' : undefined}
             className={twMerge(
               'flex-1 flex flex-col items-center justify-center py-3 text-xs font-medium transition-colors',
               pathname === item.href
