@@ -7,8 +7,16 @@ import Link from 'next/link'
 
 export default function EditExpensePage() {
   const { id } = useParams<{ id: string }>()
-  const { state } = useExpenses()
+  const { state, hydrated } = useExpenses()
   const expense = state.expenses.find(e => e.id === id)
+
+  if (!hydrated) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-8 flex items-center justify-center">
+        <div className="animate-pulse text-slate-400 text-sm">Loading…</div>
+      </div>
+    )
+  }
 
   if (!expense) {
     return (
