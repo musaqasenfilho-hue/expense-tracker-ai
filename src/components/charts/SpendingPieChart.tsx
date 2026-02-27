@@ -11,6 +11,7 @@ interface Props {
   expenses: Expense[]
 }
 
+// Keeps labels short while still showing contribution percentage.
 function renderLabel(props: PieLabelRenderProps): string {
   const name = typeof props.name === 'string' ? props.name : String(props.name ?? '')
   const percent = typeof props.percent === 'number' ? props.percent : 0
@@ -19,6 +20,7 @@ function renderLabel(props: PieLabelRenderProps): string {
 
 export default function SpendingPieChart({ expenses }: Props) {
   const totals = getCategoryTotals(expenses)
+  // Hide zero-value slices to reduce visual noise.
   const data = CATEGORIES
     .map(c => ({ name: c, value: totals[c] }))
     .filter(d => d.value > 0)
@@ -51,9 +53,9 @@ export default function SpendingPieChart({ expenses }: Props) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value) => {
+          formatter={(value, name) => {
             const cents = typeof value === 'number' ? value : Number(value)
-            return formatCurrency(cents)
+            return [formatCurrency(cents), name]
           }}
         />
       </PieChart>

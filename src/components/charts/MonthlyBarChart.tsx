@@ -18,7 +18,9 @@ interface Props {
 }
 
 export default function MonthlyBarChart({ expenses }: Props) {
+  // ISO prefix matches stored `date` format (YYYY-MM-DD).
   const currentYearMonth = new Date().toISOString().slice(0, 7)
+  // Recharts Y axis expects human-readable dollars, app state stores cents.
   const data = getMonthlyTotals(expenses, currentYearMonth).map(d => ({
     ...d,
     totalDisplay: d.total / 100,
@@ -42,12 +44,13 @@ export default function MonthlyBarChart({ expenses }: Props) {
         />
         <Tooltip
           formatter={(value) => {
+            // Tooltip values arrive as unknown/union from Recharts internals.
             const dollars = typeof value === 'number' ? value : Number(value)
             return formatCurrency(Math.round(dollars * 100))
           }}
           cursor={{ fill: '#f1f5f9' }}
         />
-        <Bar dataKey="totalDisplay" fill="#6366f1" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="totalDisplay" fill="#4f46e5" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

@@ -11,9 +11,10 @@ import MonthlyBarChart from '@/components/charts/MonthlyBarChart'
 import EmptyState from '@/components/ui/EmptyState'
 
 export default function DashboardPage() {
-  const { state } = useExpenses()
+  const { state, hydrated } = useExpenses()
   const { expenses } = state
 
+  // Dashboard KPIs are derived from canonical values stored in cents.
   const currentYearMonth = new Date().toISOString().slice(0, 7)
   const totalAllTime = expenses.reduce((sum, e) => sum + e.amount, 0)
   const thisMonth = getThisMonthTotal(expenses, currentYearMonth)
@@ -22,8 +23,18 @@ export default function DashboardPage() {
     ? expenses.filter(e => e.category === topCategory).reduce((s, e) => s + e.amount, 0)
     : 0
   const recentExpenses = [...expenses]
+    // Date is persisted as YYYY-MM-DD, so lexical comparison gives correct ordering.
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 5)
+
+  // Wait for persisted data before showing totals/charts to avoid UI flicker.
+  if (!hydrated) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-slate-400 text-sm animate-pulse">Loading…</p>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -48,7 +59,7 @@ export default function DashboardPage() {
         />
         <SummaryCard
           title="Top Category"
-          value={topCategory ?? '—'}
+          value={topCategory ?? 'None'}
           subtitle={topCategory ? formatCurrency(topCategoryTotal) : 'No expenses yet'}
           icon="🏆"
         />
@@ -63,20 +74,21 @@ export default function DashboardPage() {
         />
       ) : (
         <>
+          {/* Render analytics panels only when we have at least one expense. */}
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <section aria-label="Spending by category chart" className="bg-white border border-slate-200 rounded-xl p-5">
               <h2 className="text-base font-semibold text-slate-900 mb-4">Spending by Category</h2>
               <SpendingPieChart expenses={expenses} />
-            </div>
-            <div className="bg-white border border-slate-200 rounded-xl p-5">
+            </section>
+            <section aria-label="Monthly spending chart" className="bg-white border border-slate-200 rounded-xl p-5">
               <h2 className="text-base font-semibold text-slate-900 mb-4">Monthly Spending</h2>
               <MonthlyBarChart expenses={expenses} />
-            </div>
+            </section>
           </div>
 
           {/* Recent expenses */}
-          <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+          <section aria-label="Recent expenses" className="bg-white border border-slate-200 rounded-xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
               <h2 className="text-base font-semibold text-slate-900">Recent Expenses</h2>
               <Link
@@ -107,7 +119,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         </>
       )}
     </div>
