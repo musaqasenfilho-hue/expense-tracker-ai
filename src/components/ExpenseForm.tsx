@@ -20,6 +20,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
   const router = useRouter()
   const { dispatch } = useExpenses()
   const isEdit = !!initialExpense
+  const [todayStr] = useState(() => today())
 
   const [date, setDate] = useState(initialExpense?.date ?? today())
   const [amountDisplay, setAmountDisplay] = useState(
@@ -34,7 +35,7 @@ export default function ExpenseForm({ initialExpense }: Props) {
   function validate(): boolean {
     const errs: Record<string, string> = {}
     if (!date) errs.date = 'Date is required'
-    else if (date > today()) errs.date = 'Date cannot be in the future'
+    else if (date > todayStr) errs.date = 'Date cannot be in the future'
     const cents = displayToCents(amountDisplay)
     if (!amountDisplay) errs.amount = 'Amount is required'
     else if (isNaN(cents) || cents <= 0) errs.amount = 'Enter a valid positive amount'
@@ -65,7 +66,6 @@ export default function ExpenseForm({ initialExpense }: Props) {
       dispatch({ type: 'ADD_EXPENSE', payload: expense })
     }
 
-    setSaving(false)
     setToast(isEdit ? 'Expense updated!' : 'Expense added!')
     setTimeout(() => router.push('/expenses'), 1200)
   }
@@ -80,8 +80,10 @@ export default function ExpenseForm({ initialExpense }: Props) {
             id="date"
             type="date"
             value={date}
-            max={today()}
+            max={todayStr}
             onChange={e => { setDate(e.target.value); setErrors(p => ({ ...p, date: '' })) }}
+            aria-invalid={!!errors.date}
+            aria-describedby={errors.date ? 'date-error' : undefined}
             className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${errors.date ? 'border-red-400' : 'border-slate-300'}`}
           />
           {errors.date && <p id="date-error" role="alert" className="text-xs text-red-600 mt-1">{errors.date}</p>}
@@ -104,6 +106,8 @@ export default function ExpenseForm({ initialExpense }: Props) {
                 if (!isNaN(cents) && cents > 0) setAmountDisplay(centsToDisplay(cents))
               }}
               placeholder="0.00"
+              aria-invalid={!!errors.amount}
+              aria-describedby={errors.amount ? 'amount-error' : undefined}
               className={`w-full pl-7 pr-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${errors.amount ? 'border-red-400' : 'border-slate-300'}`}
             />
           </div>
@@ -135,6 +139,8 @@ export default function ExpenseForm({ initialExpense }: Props) {
             onChange={e => { setDescription(e.target.value); setErrors(p => ({ ...p, description: '' })) }}
             placeholder="What did you spend on?"
             maxLength={120}
+            aria-invalid={!!errors.description}
+            aria-describedby={errors.description ? 'description-error' : undefined}
             className={`w-full px-3 py-2 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${errors.description ? 'border-red-400' : 'border-slate-300'}`}
           />
           {errors.description && <p id="description-error" role="alert" className="text-xs text-red-600 mt-1">{errors.description}</p>}
