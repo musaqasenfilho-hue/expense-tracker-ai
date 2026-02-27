@@ -1,0 +1,32 @@
+import type { Expense } from '@/types/expense'
+
+function escapeCSV(value: string): string {
+  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+    return `"${value.replace(/"/g, '""')}"`
+  }
+  return value
+}
+
+export function generateCSV(expenses: Expense[]): string {
+  const header = 'Date,Amount,Category,Description'
+  const rows = expenses.map(e =>
+    [
+      e.date,
+      (e.amount / 100).toFixed(2),
+      e.category,
+      escapeCSV(e.description),
+    ].join(',')
+  )
+  return [header, ...rows].join('\n')
+}
+
+export function downloadCSV(expenses: Expense[], filename = 'expenses.csv'): void {
+  const csv = generateCSV(expenses)
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
+}
