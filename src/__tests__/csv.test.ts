@@ -17,4 +17,9 @@ describe('generateCSV', () => {
     const csv = generateCSV([{ ...expenses[0], description: 'Lunch, dinner' }])
     expect(csv).toContain('"Lunch, dinner"')
   })
+
+  it('escapes double quotes in description', () => {
+    const csv = generateCSV([{ ...expenses[0], description: 'She said "hello"' }])
+    expect(csv).toContain('"She said ""hello"""')
+  })
 })
