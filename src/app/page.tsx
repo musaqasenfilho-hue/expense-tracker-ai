@@ -95,7 +95,7 @@ export default function DashboardPage() {
                 href="/expenses"
                 className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
               >
-                View all →
+                View all expenses
               </Link>
             </div>
             <div className="divide-y divide-slate-100">
