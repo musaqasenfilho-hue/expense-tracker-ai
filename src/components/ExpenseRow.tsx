@@ -65,8 +65,17 @@ export default function ExpenseRow({ expense }: Props) {
           <div className="flex flex-col items-end gap-2 shrink-0">
             <span className="text-base font-bold text-slate-900">{formatCurrency(expense.amount)}</span>
             <div className="flex gap-3">
-              <Link href={`/expenses/${expense.id}/edit`} className="text-sm text-indigo-600 hover:underline">Edit</Link>
-              <button type="button" onClick={() => setConfirming(true)} className="text-sm text-red-600 hover:underline">Delete</button>
+              <Link
+                href={`/expenses/${expense.id}/edit`}
+                className="text-sm text-indigo-600 hover:underline"
+                aria-label={`Edit ${expense.description}`}
+              >Edit</Link>
+              <button
+                type="button"
+                onClick={() => setConfirming(true)}
+                className="text-sm text-red-600 hover:underline"
+                aria-label={`Delete ${expense.description}`}
+              >Delete</button>
             </div>
           </div>
         </div>
