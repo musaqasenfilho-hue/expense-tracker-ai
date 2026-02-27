@@ -21,7 +21,9 @@ export function getThisMonthTotal(expenses: Expense[], yearMonth: string): numbe
 export function getTopCategory(expenses: Expense[]): Category | null {
   if (expenses.length === 0) return null
   const totals = getCategoryTotals(expenses)
-  return (Object.entries(totals).sort(([, a], [, b]) => b - a)[0][0]) as Category
+  const nonZero = Object.entries(totals).filter(([, v]) => v > 0)
+  if (nonZero.length === 0) return null
+  return (nonZero.sort(([, a], [, b]) => b - a)[0][0]) as Category
 }
 
 // Builds a rolling 6-month window ending at `currentYearMonth` for bar chart usage.

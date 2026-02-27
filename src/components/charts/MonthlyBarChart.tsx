@@ -46,7 +46,7 @@ export default function MonthlyBarChart({ expenses }: Props) {
           formatter={(value) => {
             // Tooltip values arrive as unknown/union from Recharts internals.
             const dollars = typeof value === 'number' ? value : Number(value)
-            return formatCurrency(Math.round(dollars * 100))
+            return [formatCurrency(Math.round(dollars * 100)), 'Spending']
           }}
           cursor={{ fill: '#f1f5f9' }}
         />

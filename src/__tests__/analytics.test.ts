@@ -33,6 +33,14 @@ describe('getTopCategory', () => {
   it('returns null for empty expenses', () => {
     expect(getTopCategory([])).toBeNull()
   })
+
+  it('returns null when all expenses have zero amount', () => {
+    const expenses: Expense[] = [
+      { id: '1', date: '2024-01-15', amount: 0, category: 'Food', description: 'free', createdAt: '' },
+      { id: '2', date: '2024-01-16', amount: 0, category: 'Bills', description: 'also free', createdAt: '' },
+    ]
+    expect(getTopCategory(expenses)).toBeNull()
+  })
 })
 
 describe('getMonthlyTotals', () => {
