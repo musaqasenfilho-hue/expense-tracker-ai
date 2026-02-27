@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useReducer, useEffect, useRef, useMemo, ReactNode } from 'react'
 import type { AppState, Expense, FilterState } from '@/types/expense'
 import { DEFAULT_FILTERS } from '@/types/expense'
 
@@ -40,8 +40,10 @@ export function expenseReducer(state: AppState, action: Action): AppState {
       }
     case 'SET_FILTER':
       return { ...state, filters: { ...state.filters, ...action.payload } }
-    default:
-      return state
+    default: {
+      const _exhaustive: never = action
+      return _exhaustive
+    }
   }
 }
 
@@ -58,22 +60,27 @@ const STORAGE_KEY = 'expense-tracker-data'
 
 export function ExpenseProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(expenseReducer, initialState)
+  const hydrated = useRef(false)
 
   // Hydrate from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        const parsed: Expense[] = JSON.parse(stored)
-        dispatch({ type: 'HYDRATE', payload: parsed })
+        const parsed: unknown = JSON.parse(stored)
+        if (Array.isArray(parsed)) {
+          dispatch({ type: 'HYDRATE', payload: parsed as Expense[] })
+        }
       }
     } catch {
       // ignore parse errors
     }
+    hydrated.current = true
   }, [])
 
   // Persist to localStorage on every change
   useEffect(() => {
+    if (!hydrated.current) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.expenses))
     } catch {
@@ -81,8 +88,10 @@ export function ExpenseProvider({ children }: { children: ReactNode }) {
     }
   }, [state.expenses])
 
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch])
+
   return (
-    <ExpenseContext.Provider value={{ state, dispatch }}>
+    <ExpenseContext.Provider value={value}>
       {children}
     </ExpenseContext.Provider>
   )
